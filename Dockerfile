@@ -17,20 +17,11 @@ RUN set -x \
 	&& yum -y install gcc \
 	&& yum -y install gcc-c++ \
 	&& yum -y install httpd \
-	&& yum -y install git
+	&& yum -y install git \
+	&& yum -y install openssh-server
 
+# Manually install htop from RPM because no EPEL release for armhfp architecture
 RUN set -x \
-	&& yum -y upgrade ca-certificates \
-	&& wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-	&& rpm -ivh epel-release-latest-7.noarch.rpm
+	&& wget https://armv7.dev.centos.org/repodir/epel-pass-1/htop/2.2.0-3.el7/armv7hl/htop-2.2.0-3.el7.armv7hl.rpm \
+	&& yum -y localinstall htop-2.2.0-3.el7.armv7hl.rpm
 
-RUN set -x \
-	&& cat /etc/yum.repos.d/epel.repo
-	#&& rpm -ivh http://mirror.centos.org/altarch/7/os/armhfp/Packages/centos-userland-release-7-8.2003.0.el7.centos.armv7hl.rpm \
-#	&& yum -y install htop
-#RUN set -x \
-#	&& wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-#	&& rpm -ivh epel-release-latest-7.noarch.rpm \
-#	&& yum-config-manager --disable epel
-	#&& yum -y --enable-repo="epel" install htop
-#	&& yum -y install htop
