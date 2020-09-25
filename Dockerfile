@@ -67,7 +67,8 @@ RUN set -x \
 	&& chmod +x /root/start-sshd
 
 RUN set -x \
-	&& useradd -m -s /usr/local/bin/zsh -p password -G wheel fred
+	&& useradd -m -s /usr/local/bin/zsh -G wheel fred \
+	&& echo "fred:Password1" | chpasswd
 
 # Expose port 80 for httpd
 EXPOSE 80
