@@ -53,5 +53,33 @@ RUN set -x \
 	&& make -j \
 	&& make install
 
-	
+RUN set -x \
+	&& yum -y install sudo
+
+RUN set -x \
+	&& /usr/bin/ssh-keygen -A
+
+ADD start-httpd /root
+ADD start-sshd /root
+
+RUN set -x \
+	&& chmod +x /root/start-httpd \
+	&& chmod +x /root/start-sshd
+
+RUN set -x \
+	&& useradd -m -s /usr/local/bin/zsh -p password -G wheel fred
+
+# Expose port 80 for httpd
+EXPOSE 80
+
+# Expose port 22 for sshd
+EXPOSE 22	
+
+# Manual stuff. 
+# Berryconda.
+# visudo wheel group
+# Setup zsh for fred
+# Disable ssh
+
+
 
