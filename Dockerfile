@@ -20,7 +20,9 @@ RUN set -x \
 	&& yum -y install git \
 	&& yum -y install openssh-server \
 	&& yum -y install bzip2 \
-	&& yum -y install make
+	&& yum -y install make \
+	&& yum -y install sudo \
+	&& yum -y install clang
 
 # Manually install htop from RPM because no EPEL release for armhfp architecture
 RUN set -x \
@@ -32,7 +34,7 @@ RUN set -x \
 	&& wget https://github.com/jjhelmus/berryconda/releases/download/v2.0.0/Berryconda3-2.0.0-Linux-armv7l.sh \
 	&& chmod +x Berryconda3-2.0.0-Linux-armv7l.sh
 
-# Download zsh to compile from source
+# Download ncurses to compile from source
 RUN set -x \
 	&& wget ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
 	&& tar xf ncurses-6.1.tar.gz \
@@ -40,7 +42,8 @@ RUN set -x \
 	&& ./configure --prefix=/usr/local CXXFLAGS="-fPIC" CFLAGS="-fPIC" \
 	&& make -j \
 	&& make install
-	
+
+# Compile zsh from source
 RUN set -x \
 	&& wget -O zsh.tar.xz https://sourceforge.net/projects/zsh/files/latest/download \
 	&& tar xf zsh.tar.xz \
@@ -53,22 +56,32 @@ RUN set -x \
 	&& make -j \
 	&& make install
 
-RUN set -x \
-	&& yum -y install sudo
-
+# Generate keys for SSHD
 RUN set -x \
 	&& /usr/bin/ssh-keygen -A
 
+# Add start script for httpd
 ADD start-httpd /root
+
+# Add start script for sshd
 ADD start-sshd /root
 
 RUN set -x \
 	&& chmod +x /root/start-httpd \
 	&& chmod +x /root/start-sshd
 
+# Create new user fred
 RUN set -x \
 	&& useradd -m -s /usr/local/bin/zsh -G wheel fred \
 	&& echo "fred:Password1" | chpasswd
+
+USER fred
+RUN set -x \
+	&& touch ~/.zshrc \
+	&& git config --global user.name "Robert Beardow" \
+	&& git config --global user.email "s3641721@student.rmit.edu.au"
+
+USER root
 
 # Expose port 80 for httpd
 EXPOSE 80
@@ -79,7 +92,6 @@ EXPOSE 22
 # Manual stuff. 
 # Berryconda.
 # visudo wheel group
-# Setup zsh for fred
 # Disable ssh
 
 
