@@ -41,6 +41,17 @@ RUN set -x \
 	&& make -j \
 	&& make install
 	
+RUN set -x \
+	&& wget -O zsh.tar.xz https://sourceforge.net/projects/zsh/files/latest/download \
+	&& tar xf zsh.tar.xz \
+	&& cd zsh-5.7.1 \
+	&& ./configure \
+		--prefix="$HOME/local" \
+		--with-tcsetpgrp \
+		CPPFLAGS="-I$HOME/local/include" \
+		LDFLAGS="-L$HOME/local/lib" \
+	&& make -j \
+	&& make install
 
 	
 
