@@ -37,7 +37,7 @@ RUN set -x \
 	&& wget ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz \
 	&& tar xf ncurses-6.1.tar.gz \
 	&& cd ncurses-6.1 \
-	&& ./configure --prefix=$HOME/local CXXFLAGS="-fPIC" CFLAGS="-fPIC" \
+	&& ./configure --prefix=/usr/local CXXFLAGS="-fPIC" CFLAGS="-fPIC" \
 	&& make -j \
 	&& make install
 	
@@ -46,10 +46,10 @@ RUN set -x \
 	&& tar xf zsh.tar.xz \
 	&& cd zsh-5.7.1 \
 	&& ./configure \
-		--prefix="$HOME/local" \
+		--prefix="/usr/local" \
 		--with-tcsetpgrp \
-		CPPFLAGS="-I$HOME/local/include" \
-		LDFLAGS="-L$HOME/local/lib" \
+		CPPFLAGS="-I/usr/local/include" \
+		LDFLAGS="-L/usr/local/lib" \
 	&& make -j \
 	&& make install
 
