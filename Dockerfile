@@ -1,14 +1,16 @@
 FROM centos:centos7
 
+LABEL maintainer="s3641721@student.rmit.edu.au"
 
 # Set the timezone
 ENV TZ Australia/Canberra
 
+# Set up build directory and install all base tools with yum
 RUN set -x \
-	&& yum -y update
-
-# Install base tools
-RUN set -x \
+	&& cd ~ \
+	&& mkdir build \
+	&& cd build \
+	&& yum -y update \
 	&& yum -y install wget \
 	&& yum -y install man \
 	&& yum -y install man-pages \
@@ -54,7 +56,8 @@ RUN set -x \
 		CPPFLAGS="-I/usr/local/include" \
 		LDFLAGS="-L/usr/local/lib" \
 	&& make -j \
-	&& make install
+	&& make install \
+	&& echo '/usr/local/bin/zsh' >> /etc/shells
 
 # Generate keys for SSHD
 RUN set -x \
@@ -79,7 +82,9 @@ USER fred
 RUN set -x \
 	&& touch ~/.zshrc \
 	&& git config --global user.name "Robert Beardow" \
-	&& git config --global user.email "s3641721@student.rmit.edu.au"
+	&& git config --global user.email "s3641721@student.rmit.edu.au" \
+	&& sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+	&& git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 USER root
 
